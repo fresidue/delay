@@ -88,6 +88,10 @@ Value to resolve or reject in the returned promise.
 
 Clears the delay and settles the promise.
 
+### delay#hasSettled()
+
+Interrogates the delay as to its status
+
 
 ## Related
 
