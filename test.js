@@ -81,3 +81,26 @@ test('can clear a delayed rejection', async t => {
 	await t.throws(delayPromise, /error!/);
 	t.true(end() < 30);
 });
+
+test('keeps track of settled state (timer completion)', async t => {
+	const end = timeSpan();
+	const delayPromise = m(30, 'completed');
+	t.false(delayPromise.hasSettled());
+	const completed = await delayPromise;
+	t.true(delayPromise.hasSettled());
+	t.is(completed, 'completed');
+	t.true(end() > 29);
+});
+
+test('keeps track of settled state (timer cleared)', async t => {
+	const end = timeSpan();
+	const delayPromise = m(1000, 'cleared');
+	t.false(delayPromise.hasSettled());
+	setTimeout(() => {
+		delayPromise.clear();
+		t.true(delayPromise.hasSettled());
+	}, 30);
+	const cleared = await delayPromise;
+	t.true(delayPromise.hasSettled());
+	t.true(end() < 40);
+});

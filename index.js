@@ -6,7 +6,10 @@ const createDelay = willResolve => (ms, value) => {
 
 	const delayPromise = new Promise((resolve, reject) => {
 		settle = willResolve ? resolve : reject;
-		timeoutId = setTimeout(settle, ms, value);
+		timeoutId = setTimeout(() => {
+			timeoutId = null;
+			settle(value);
+		}, ms);
 	});
 
 	delayPromise.clear = () => {
@@ -16,6 +19,8 @@ const createDelay = willResolve => (ms, value) => {
 			settle(value);
 		}
 	};
+
+	delayPromise.hasSettled = () => !timeoutId;
 
 	return delayPromise;
 };
